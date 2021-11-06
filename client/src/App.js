@@ -9,8 +9,8 @@ import {
     RegisterScreen,
     Statusbar,
     WorkspaceScreen,
+    LoginScreen
 } from './components'
-import LoginScreen from './components/LoginScreen';
 /*
     This is our application's top-level component.
     

@@ -15,6 +15,52 @@ getLoggedIn = async (req, res) => {
         }).send();
     })
 }
+loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if ( !email || !password ) {
+            return res
+                .status(400)
+                .jason({errorMessage: "Please enter all required fields." });
+        }
+        const existingUser = await User.findOne({ email: email });
+        if (!existingUser) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "An account with this email address doesn't exists."
+                })
+        }
+        const matchingPassword = await bcrypt.compare(password, existingUser.passwordHash)
+        console.log(matchingPassword)
+        if (!matchingPassword) {
+            return res 
+                .status(400)
+                .json({
+                    sucess: false,
+                    errorMessage: "Incorrect password"
+                })
+        }
+        const token = auth.signToken(existingUser);
+
+        await res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        }).status(200).json({
+            success: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                email: existingUser.email
+            }
+        }).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
 
 registerUser = async (req, res) => {
     try {
@@ -80,5 +126,6 @@ registerUser = async (req, res) => {
 
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    loginUser
 }
