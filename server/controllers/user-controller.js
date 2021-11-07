@@ -21,7 +21,9 @@ loginUser = async (req, res) => {
         if ( !email || !password ) {
             return res
                 .status(400)
-                .jason({errorMessage: "Please enter all required fields." });
+                .json({
+                    errorMessage: "Please enter all required fields." 
+                })
         }
         const existingUser = await User.findOne({ email: email });
         if (!existingUser) {

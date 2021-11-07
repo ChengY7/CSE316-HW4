@@ -16,6 +16,7 @@ import Copyright from './Copyright'
 import AuthContext from '../auth'
 import { GlobalStoreContext } from '../store'
 import { useContext } from 'react';
+import BasicModal from './BasicModal';
 
 
 
@@ -115,12 +116,13 @@ export default function LoginScreen() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/register/" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
               </Grid>
               <Copyright sx={{ mt: 5 }} />
+              <BasicModal />
             </Box>
           </Box>
         </Grid>
