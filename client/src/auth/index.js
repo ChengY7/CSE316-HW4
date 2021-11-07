@@ -12,7 +12,8 @@ export const AuthActionType = {
     REGISTER_USER: "REGISTER_USER",
     LOGIN_USER: "LOGIN_USER",
     ERROR: "ERROR",
-    MODAL_CLOSE: "MODAL_CLOSE"
+    MODAL_CLOSE: "MODAL_CLOSE",
+    LOGOUT_USER: "LOGOUT_USER",
 }
 
 function AuthContextProvider(props) {
@@ -53,6 +54,14 @@ function AuthContextProvider(props) {
                     loggedIn: false,
                     error: true,
                     errorMessage: payload.errorMessage
+                })
+            }
+            case AuthActionType.LOGOUT_USER: {
+                return setAuth({
+                    user: null,
+                    loggedIn: payload.loggedIn,
+                    error: false,
+                    errorMessage: null
                 })
             }
             case AuthActionType.MODAL_CLOSE: {
@@ -112,7 +121,15 @@ function AuthContextProvider(props) {
             //store.loadIdNamePairs();
         }
     }
-
+    auth.logoutUser = async function() {
+        authReducer({
+            type: AuthActionType.LOGOUT_USER,
+            payload: {
+                loggedIn: false
+            }
+        })
+        history.push("/");
+    }
     auth.registerUser = async function(userData, store) {
         const response = await api.registerUser(userData).catch((error) => {
             authReducer({
