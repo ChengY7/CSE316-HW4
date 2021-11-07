@@ -172,13 +172,19 @@ function GlobalStoreContextProvider(props) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
                 if (response.data.success) {
                     async function getListPairs(top5List) {
-                        response = await api.getTop5ListPairs();
+                        const response = await api.getTop5ListPairs();
                         if (response.data.success) {
                             let pairsArray = response.data.idNamePairs;
+                            let newPairsArray=[];
+                            for (let i = 0; i<pairsArray.length; i++) {
+                                if (pairsArray[i].ownerEmail===auth.user.email) {
+                                newPairsArray.push(pairsArray[i]);
+                                }
+                            }
                             storeReducer({
                                 type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                 payload: {
-                                    idNamePairs: pairsArray,
+                                    idNamePairs: newPairsArray,
                                     top5List: top5List
                                 }
                             });
@@ -230,12 +236,19 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
+        //let payload = { ownerEmail: auth.user.email };
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
+            let newPairsArray=[];
+            for (let i = 0; i<pairsArray.length; i++) {
+                if (pairsArray[i].ownerEmail===auth.user.email) {
+                    newPairsArray.push(pairsArray[i]);
+                }
+            }
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: pairsArray
+                payload: newPairsArray
             });
         }
         else {
