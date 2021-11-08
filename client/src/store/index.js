@@ -167,6 +167,9 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
+            if (top5List.ownerEmail !== auth.user.email) {
+                return
+            }
             top5List.name = newName;
             async function updateList(top5List) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
@@ -272,6 +275,9 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.deleteList = async function (listToDelete) {
+        if (listToDelete.ownerEmail !== auth.user.email) {
+            return
+        }
         let response = await api.deleteTop5ListById(listToDelete._id);
         if (response.data.success) {
             store.loadIdNamePairs();
