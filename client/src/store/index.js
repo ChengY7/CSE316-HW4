@@ -303,12 +303,28 @@ function GlobalStoreContextProvider(props) {
     // OF A LIST, WHICH INCLUDES DEALING WITH THE TRANSACTION STACK. THE
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
     // moveItem, updateItem, updateCurrentList, undo, and redo
+    // store.refresh = async function (id) {
+    //     tps.clearAllTransactions();
+    //     let response = await api.getTop5ListById(id);
+    //     if (response.data.success) {
+    //         let top5List = response.data.top5List;
+    //         storeReducer({
+    //             type: GlobalStoreActionType.SET_CURRENT_LIST,
+    //             payload: top5List
+    //         });
+    //         history.push("/top5list/" + top5List._id);
+    //     }
+    //     store.checkRedo();
+    //     store.checkUndo();
+    // }
     store.setCurrentList = async function (id) {
         tps.clearAllTransactions();
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
-
+            if (top5List.ownerEmail !== auth.user.email) {
+                return
+            }
             response = await api.updateTop5ListById(top5List._id, top5List);
             if (response.data.success) {
                 storeReducer({

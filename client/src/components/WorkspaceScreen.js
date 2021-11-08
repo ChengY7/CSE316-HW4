@@ -11,7 +11,11 @@ import { GlobalStoreContext } from '../store/index.js'
 */
 function WorkspaceScreen() {
     const { store } = useContext(GlobalStoreContext);
-
+    // let url = window.location.href
+    // if (url.length>10) {
+    //     var id = url.substring(url.lastIndexOf('/') + 1);
+    //     store.refresh(id);
+    // }
     let editItems = "";
     if (store.currentList) {
         editItems = 

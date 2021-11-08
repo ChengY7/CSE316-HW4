@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
+import { AuthContext } from '../auth';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
@@ -16,6 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair } = props;

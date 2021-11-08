@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import { AuthContext } from '../auth';
 /*
     This React component represents a single item in our
     Top 5 List, which can be edited or moved around.
@@ -13,6 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 */
 function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [draggedTo, setDraggedTo] = useState(0);
     const [text, setText] = useState("");
@@ -50,6 +52,11 @@ function Top5Item(props) {
     }
 
     function handleToggleEdit(event) {
+        //console.log(auth.user.email)
+        //console.log(store.currentList.ownerEmail)
+        if (auth.user.email !== store.currentList.ownerEmail) {
+            return
+        }
         event.stopPropagation();
         toggleEdit();
     }
