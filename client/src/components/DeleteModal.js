@@ -49,7 +49,7 @@ export default function DeleteModal() {
       >
         <Alert severity="info" style={style}>
             <AlertTitle>Info</AlertTitle>
-            <strong style={{paddingRight: 80}}>Delete the { name } Top 5 List?</strong>
+            <strong style={{paddingRight: 100}}>Delete the { name } Top 5 List?</strong>
             <Button variant="text" onClick={handleDelete}>DELETE</Button>
             <Button variant="text" onClick={handleClose}>CANCEL</Button>
         </Alert>
