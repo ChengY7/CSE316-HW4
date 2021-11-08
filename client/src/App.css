@@ -78,7 +78,7 @@ body {
 .top5-button-disabled {
   font-size: 36pt;
   border-width: 0px;
-  float: left;
+  float: none;
   color: black;
   cursor: pointer;
   opacity: 100%;

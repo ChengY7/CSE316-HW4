@@ -58,7 +58,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: payload.top5List,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -184,6 +184,7 @@ function GlobalStoreContextProvider(props) {
                                 newPairsArray.push(pairsArray[i]);
                                 }
                             }
+                            //store.loadIdNamePairs();
                             storeReducer({
                                 type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                 payload: {
@@ -209,6 +210,8 @@ function GlobalStoreContextProvider(props) {
         
         tps.clearAllTransactions();
         history.push("/");
+        store.checkUndo();
+        store.checkRedo();
     }
 
     // THIS FUNCTION CREATES A NEW LIST
@@ -301,6 +304,7 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
     // moveItem, updateItem, updateCurrentList, undo, and redo
     store.setCurrentList = async function (id) {
+        tps.clearAllTransactions();
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
@@ -314,17 +318,23 @@ function GlobalStoreContextProvider(props) {
                 history.push("/top5list/" + top5List._id);
             }
         }
+        store.checkRedo();
+        store.checkUndo();
     }
 
     store.addMoveItemTransaction = function (start, end) {
         let transaction = new MoveItem_Transaction(store, start, end);
         tps.addTransaction(transaction);
+        store.checkRedo();
+        store.checkUndo();
     }
 
     store.addUpdateItemTransaction = function (index, newText) {
         let oldText = store.currentList.items[index];
         let transaction = new UpdateItem_Transaction(store, index, oldText, newText);
         tps.addTransaction(transaction);
+        store.checkRedo();
+        store.checkUndo();
     }
 
     store.moveItem = function (start, end) {
@@ -366,10 +376,14 @@ function GlobalStoreContextProvider(props) {
 
     store.undo = function () {
         tps.undoTransaction();
+        store.checkRedo();
+        store.checkUndo();
     }
 
     store.redo = function () {
         tps.doTransaction();
+        store.checkRedo();
+        store.checkUndo();
     }
 
     store.canUndo = function() {
@@ -395,6 +409,30 @@ function GlobalStoreContextProvider(props) {
             payload: null
         });
     }
+    store.checkRedo = function () {
+        if (!tps.hasTransactionToRedo()) {
+            let button = document.getElementById("redo-button");
+            button.classList.add("top5-button-disabled");
+            button.style.pointerEvents='none';
+        }
+        else {
+            let button = document.getElementById("redo-button");
+            button.classList.remove("top5-button-disabled");
+            button.style.pointerEvents='auto';
+        }
+    }
+    store.checkUndo = function () {
+        if (!tps.hasTransactionToUndo()) {
+            let button = document.getElementById("undo-button");
+            button.classList.add("top5-button-disabled");
+            button.style.pointerEvents='none';
+        }
+        else {
+            let button = document.getElementById("undo-button");
+            button.classList.remove("top5-button-disabled");
+            button.style.pointerEvents='auto';
+        }
+    }
 
     return (
         <GlobalStoreContext.Provider value={{
@@ -404,6 +442,7 @@ function GlobalStoreContextProvider(props) {
         </GlobalStoreContext.Provider>
     );
 }
+
 
 export default GlobalStoreContext;
 export { GlobalStoreContextProvider };
